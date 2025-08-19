@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -6,46 +6,41 @@ import { AnimatePresence, motion } from "framer-motion";
 const Test = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  // عدد العناصر في كل سطر
   const lines = [
-    { count: 9, top: "12%" },
-    { count: 10, top: "22.4%" },
-    { count: 11, top: "32.9%" },
-    { count: 12, top: "auto" }, // السطر الأوسط بدون top أو bottom
-    { count: 13, bottom: "32.9%" },
+    { count: 9, spacing: "-mb-6" }, // السطر الأول مع تباعد 2rem
+    { count: 10, spacing: "-mb-6" }, // السطر الثاني مع تباعد 2.5rem
+    { count: 11, spacing: "-mb-6" }, // السطر الثالث مع تباعد 3rem
+    { count: 12, spacing: "-mb-6" }, // السطر الرابع مع تباعد 3.5rem
+    { count: 13, spacing: "" }, // السطر الأخير بدون تباعد إضافي
   ];
 
   return (
-    <section className="absolute gap-1 top-0 left-0 w-full h-full flex flex-col items-center justify-center">
+    <div className="relative w-full h-full flex flex-col items-center justify-center p-4">
       {lines.map((line, lineIndex) => {
-        // تحديد إذا كان السطر في الأعلى أو الأسطر أو الوسط
-        const positionClass = line.top
-          ? `absolute top-[${line.top}]`
-          : line.bottom
-          ? `absolute bottom-[${line.bottom}]`
-          : "";
+        // حساب المؤشر العالمي للعنصر
+        const globalIndexOffset = lines
+          .slice(0, lineIndex)
+          .reduce((acc, curr) => acc + curr.count, 0);
 
         return (
-          <section
+          <div
             key={lineIndex}
-            className={`w-full flex justify-center items-center gap-2 ${positionClass}`}
+            className={`flex justify-center items-center gap-2 ${line.spacing}`}
           >
             {Array.from({ length: line.count }).map((_, index) => {
-              const globalIndex = lines
-                .slice(0, lineIndex)
-                .reduce((acc, curr) => acc + curr.count, index);
+              const globalIndex = globalIndexOffset + index;
 
               return (
                 <div
                   key={index}
-                  className="relative group items-center justify-center flex"
+                  className="relative group flex items-center justify-center"
                   onMouseEnter={() => setHoveredIndex(globalIndex)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
                   <AnimatePresence>
                     {hoveredIndex === globalIndex && (
                       <motion.span
-                        className="absolute inset-0 path z-10 items-center size-32 bg-neutral-200 block"
+                        className="absolute z-10 w-32 h-32 path bg-neutral-200 block"
                         layoutId="hoverBackground"
                         initial={{ opacity: 0 }}
                         animate={{
@@ -59,14 +54,14 @@ const Test = () => {
                       />
                     )}
                   </AnimatePresence>
-                  <div className="size-30 bg-gradient-to-bl from-blue-900 via-purple-600 to-violet-600 path relative z-20" />
+                  <div className="w-30 h-30 bg-gradient-to-bl from-blue-900 via-purple-600 to-violet-600 path relative z-20" />
                 </div>
               );
             })}
-          </section>
+          </div>
         );
       })}
-    </section>
+    </div>
   );
 };
 
