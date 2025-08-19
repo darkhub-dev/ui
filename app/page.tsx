@@ -1,4 +1,4 @@
-import { CardHoverEffectDemo } from '@/components/HoverEffect'
+// import { CardHoverEffectDemo } from '@/components/HoverEffect'
 import Test from '@/components/Test'
 import React from 'react'
 
